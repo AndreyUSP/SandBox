@@ -1,0 +1,25 @@
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+
+namespace DraftBriefingTest
+{
+    [TestFixture]
+    public class WorkerCreationTest : TestBase
+    {
+        
+
+        [Test]
+        public void WorkerCreation()
+        {
+            GoToSettings();
+            Login(AdminLogin, AdminPassword);
+            RegistrationBtn();
+            AddWorkerButton();
+            CreationNewWorker();
+            Thread.Sleep(10000);
+        }
+    }
+}
