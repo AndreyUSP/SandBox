@@ -1,0 +1,129 @@
+using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+
+namespace DraftBriefingTest
+{
+    public class TestBase
+    {
+        protected IWebDriver _webDriver;
+        protected static string AdminLogin = "sys";
+        protected static string AdminPassword = "123";
+        protected static string LocationOlimpoks = "http://10.1.101.26:19001/";
+
+        //menuPage
+        private readonly By _personalBriefingButton = By.XPath("//button[@value='PersonalBriefing']");
+        private readonly By _groupBriefing = By.XPath("//button[@value='GroupBriefing']");
+        private readonly By _selfPrepare = By.XPath("//button[@value='Prepare']");
+        private readonly By _scheduleObserverButton = By.XPath("//button[@value='ScheduleObserver']");  //#advertButtonContainer> .briefing-button
+        private readonly By _scheduleAdvertButton = By.CssSelector("#advertButtonContainer .briefing-button-wrapper");
+        private readonly By _settingsButton = By.CssSelector("#settings");
+        private readonly By _preshiftBriefingButton = By.XPath("//div[@id='preshift-briefing']");
+
+        //authPage
+        private readonly By _titleButton = By.XPath("//a[@class='logo']");
+        private readonly By _loginInput = By.CssSelector("#Login");
+        private readonly By _passwordInput = By.CssSelector("#Password");
+        private readonly By _continueButton = By.XPath("//span[@class='olimp-button-text']");
+
+        //administrationPage
+        private readonly By _registrationButton = By.XPath("//a[@class='register']");
+        
+        //workerPage
+        private readonly By _addWorkerButton = By.XPath("//button[@data-bind='text: adding.text, click: adding.action']");
+
+        //addingNewWorker
+        private readonly By _inputSecondName = By.XPath("//input[@id='Worker_SecondName']");
+        private readonly By _inputName = By.XPath("//input[@id='Worker_Name']");
+        private readonly By _inputThirdName = By.XPath("//input[@id='Worker_ThirdName']");
+        private readonly By _inputBirthYear = By.XPath("//input[@id='Worker_BirthYear']");
+        private readonly By _workerSubdivisionBtn = By.XPath("/html[1]/body[1]/div[2]/div[2]/form[1]/table[1]/tbody[1]/tr[5]/td[1]/table[1]/tbody[1]/tr[1]/td[2]");
+        private readonly By _workerSubdivisionSelect = By.XPath("//li[contains(., 'Подразделение 1')]");
+        private readonly By _inputWorkerNumber = By.XPath("//input[@id='Worker_Number']");
+        private readonly By _primaryProfessionBtn = By.XPath("//th[@id='edit-worker-primary-profession-label']");
+        private readonly By _primaryProfessionSelect = By.XPath("/html/body/ul[5]/li[1]/a");
+        private readonly By _inputWorkerEmail = By.XPath("//input[@id='Worker_Email']");
+        private readonly By _AddBtn = By.XPath("/html[1]/body[1]/div[2]/div[3]/button[1]");
+
+
+        [SetUp]
+        public void SetupTest()
+        {            
+            _webDriver = new ChromeDriver();
+            _webDriver.Manage().Cookies.DeleteAllCookies();
+            _webDriver.Navigate().GoToUrl(LocationOlimpoks);
+            _webDriver.Manage().Window.Maximize();
+        }
+       
+        [TearDown]
+       public void TearDownTest()
+        {
+            try
+            {
+                _webDriver.Quit();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+        protected void GoToSettings()
+        {
+            _webDriver.FindElement(_settingsButton).Click();
+        }
+        protected void Login(string login, string password)
+        {
+            _webDriver.FindElement(_loginInput).SendKeys(login);
+
+            //WaitUntil.WaitElement(_webDriver, _passwordInput);
+
+            _webDriver.FindElement(_passwordInput).SendKeys(password);
+            _webDriver.FindElement(_continueButton).Click();
+
+        }
+        public void RegistrationBtn()
+        {
+            _webDriver.FindElement(_registrationButton).Click();
+        }
+        public void AddWorkerButton()
+        {
+            _webDriver.FindElement(_addWorkerButton).Click();
+        }
+
+        public void CreationNewWorker()
+        {
+            _webDriver.FindElement(_inputSecondName).SendKeys("TestSecName");
+            _webDriver.FindElement(_inputName).SendKeys("TestName");
+            _webDriver.FindElement(_inputThirdName).SendKeys("TestThirdName");
+            _webDriver.FindElement(_inputBirthYear).SendKeys("1999");
+            try
+            {
+                _webDriver.FindElement(_workerSubdivisionBtn).Click();
+                _webDriver.FindElement(_workerSubdivisionSelect).Click();
+            }
+            catch(NoSuchElementException ex)
+            {
+                Console.WriteLine(ex);
+            }
+            _webDriver.FindElement(_inputWorkerNumber).SendKeys("777");
+            try
+            {
+                _webDriver.FindElement(_primaryProfessionBtn).Click();
+                
+                _webDriver.FindElement(_primaryProfessionSelect).Click();
+                Thread.Sleep(2000);
+            }
+            catch (Exception)
+            {
+
+            }
+            _webDriver.FindElement(_inputWorkerEmail).SendKeys("HellYeah@didIt.com");
+            _webDriver.FindElement(_AddBtn).Click();
+
+        }
+    }
+}
